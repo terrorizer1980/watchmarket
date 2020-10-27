@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/trustwallet/blockatlas/pkg/logger"
 	"github.com/trustwallet/watchmarket/db/models"
 	"github.com/trustwallet/watchmarket/db/postgres"
 	"golang.org/x/net/context"
@@ -36,10 +35,7 @@ func Init(instance postgres.Instance) {
 
 	prometheus.MustRegister(warningGaugeGroup, criticalGaugeGroup)
 	http.Handle("/metrics", promhttp.Handler())
-	var err = http.ListenAndServe(fmt.Sprintf(":%d", prometheusPort), nil)
-	if err != nil {
-		logger.Error("Prometheus metrics not started")
-	}
+	go http.ListenAndServe(fmt.Sprintf(":%d", prometheusPort), nil)
 }
 
 func RefreshMetrics() {
