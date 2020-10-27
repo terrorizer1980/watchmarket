@@ -26,4 +26,5 @@ require (
 	go.elastic.co/apm/module/apmgin v1.8.0
 	go.elastic.co/apm/module/apmgoredis v1.8.0
 	go.elastic.co/apm/module/apmgorm v1.8.0
+	golang.org/x/net v0.0.0-20200506145744-7e3656a0809f
 )

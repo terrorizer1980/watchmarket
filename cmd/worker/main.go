@@ -6,6 +6,7 @@ import (
 	"github.com/trustwallet/watchmarket/config"
 	"github.com/trustwallet/watchmarket/db/postgres"
 	"github.com/trustwallet/watchmarket/internal"
+	"github.com/trustwallet/watchmarket/metrics"
 	"github.com/trustwallet/watchmarket/services/markets"
 	"github.com/trustwallet/watchmarket/services/worker"
 	"os"
@@ -47,12 +48,18 @@ func init() {
 	c = cron.New(cron.WithChain(cron.Recover(cron.DefaultLogger)))
 	logger.InitLogger()
 
+	metrics.Init(*database)
+
 	go postgres.FatalWorker(time.Second*10, *database)
+
+	//metrics.Init()
+	//go metrics.MetricWorker(time.Second*1, *database)
 }
 
 func main() {
 	w.AddOperation(c, configuration.Worker.Rates, w.FetchAndSaveRates)
 	w.AddOperation(c, configuration.Worker.Tickers, w.FetchAndSaveTickers)
+	w.AddOperation(c, "2s", metrics.RefreshMetrics)
 
 	go c.Start()
 	go w.FetchAndSaveRates()
