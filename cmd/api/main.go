@@ -8,6 +8,7 @@ import (
 	"github.com/trustwallet/watchmarket/db/postgres"
 	_ "github.com/trustwallet/watchmarket/docs"
 	"github.com/trustwallet/watchmarket/internal"
+	"github.com/trustwallet/watchmarket/metrics"
 	"github.com/trustwallet/watchmarket/services/assets"
 	"github.com/trustwallet/watchmarket/services/cache"
 	"github.com/trustwallet/watchmarket/services/cache/memory"
@@ -38,6 +39,7 @@ var (
 	w              worker.Worker
 	c              *cron.Cron
 	memoryCache    cache.Provider
+	mi             *metrics.Instance
 )
 
 func init() {
@@ -73,6 +75,10 @@ func init() {
 	} else {
 		go postgres.FatalWorker(time.Second*10, *database)
 	}
+
+	mi = metrics.Init(*database)
+	//todo: Remove before merge
+	metrics.TempCurrent = mi
 
 	r := internal.InitRedis(configuration.Storage.Redis.Url)
 	redisCache := rediscache.Init(*r, configuration.RestAPI.Cache)

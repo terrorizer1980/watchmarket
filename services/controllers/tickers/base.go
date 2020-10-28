@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/trustwallet/watchmarket/config"
 	"github.com/trustwallet/watchmarket/db"
+	"github.com/trustwallet/watchmarket/metrics"
 	"github.com/trustwallet/watchmarket/pkg/watchmarket"
 	"github.com/trustwallet/watchmarket/services/cache"
 	"github.com/trustwallet/watchmarket/services/controllers"
@@ -50,6 +51,10 @@ func (c Controller) HandleTickersRequestV2(tr controllers.TickerRequestV2, ctx c
 	}
 
 	tickers = c.normalizeTickers(tickers, rate, ctx)
+
+	for _, item := range tickers {
+		metrics.TempCurrent.UpdateTickersCounterMetricsFor(&item)
+	}
 
 	return createResponseV2(tr, tickers), nil
 }

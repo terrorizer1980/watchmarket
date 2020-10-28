@@ -23,6 +23,7 @@ var (
 	w             worker.Worker
 	configuration config.Configuration
 	c             *cron.Cron
+	mi            *metrics.Instance
 )
 
 func init() {
@@ -48,7 +49,9 @@ func init() {
 	c = cron.New(cron.WithChain(cron.Recover(cron.DefaultLogger)))
 	logger.InitLogger()
 
-	metrics.Init(*database)
+	mi = metrics.Init(*database)
+	//todo: Remove before merge
+	metrics.TempCurrent = mi
 
 	go postgres.FatalWorker(time.Second*10, *database)
 
@@ -59,7 +62,7 @@ func init() {
 func main() {
 	w.AddOperation(c, configuration.Worker.Rates, w.FetchAndSaveRates)
 	w.AddOperation(c, configuration.Worker.Tickers, w.FetchAndSaveTickers)
-	w.AddOperation(c, "2s", metrics.RefreshMetrics)
+	w.AddOperation(c, "2s", mi.RefreshMetrics)
 
 	go c.Start()
 	go w.FetchAndSaveRates()
