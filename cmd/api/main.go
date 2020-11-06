@@ -13,6 +13,7 @@ import (
 	"github.com/trustwallet/watchmarket/services/cache/memory"
 	rediscache "github.com/trustwallet/watchmarket/services/cache/redis"
 	"github.com/trustwallet/watchmarket/services/controllers"
+	alertscontroller "github.com/trustwallet/watchmarket/services/controllers/alerts"
 	chartscontroller "github.com/trustwallet/watchmarket/services/controllers/charts"
 	infocontroller "github.com/trustwallet/watchmarket/services/controllers/info"
 	"github.com/trustwallet/watchmarket/services/controllers/rates"
@@ -35,6 +36,7 @@ var (
 	rates          controllers.RatesController
 	charts         controllers.ChartsController
 	info           controllers.InfoController
+	ac             alertscontroller.Controller
 	w              worker.Worker
 	c              *cron.Cron
 	memoryCache    cache.Provider
@@ -79,6 +81,7 @@ func init() {
 	info = infocontroller.NewController(redisCache, chartsPriority, coinInfoPriority, ratesPriority, tickerPriority, m.ChartsAPIs, configuration)
 	tickers = tickerscontroller.NewController(database, memoryCache, ratesPriority, tickerPriority, configuration)
 	rates = ratescontroller.NewController(database, memoryCache, ratesPriority, configuration)
+	ac = alertscontroller.NewController(database, configuration)
 	engine = internal.InitEngine(configuration.RestAPI.Mode)
 }
 
@@ -95,6 +98,6 @@ func main() {
 		log.Info("No items in memory cache")
 	}
 
-	internal.InitAPI(engine, tickers, rates, charts, info, configuration)
+	internal.InitAPI(engine, tickers, rates, charts, info, ac, configuration)
 	internal.SetupGracefulShutdown(port, engine)
 }

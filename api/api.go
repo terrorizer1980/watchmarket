@@ -10,6 +10,7 @@ import (
 	"github.com/trustwallet/watchmarket/api/middleware"
 	_ "github.com/trustwallet/watchmarket/docs"
 	"github.com/trustwallet/watchmarket/services/controllers"
+	alertscontroller "github.com/trustwallet/watchmarket/services/controllers/alerts"
 	"net/http"
 	"time"
 )
@@ -21,6 +22,10 @@ func SetupBasicAPI(engine *gin.Engine) {
 
 func SetupSwaggerAPI(engine *gin.Engine) {
 	engine.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+}
+
+func SetupAlertsAPI(engine *gin.Engine, ac alertscontroller.Controller) {
+	engine.POST("v1/alerts/subscribe", endpoint.SubscribeHandler(ac))
 }
 
 func SetupInfoAPI(engine *gin.Engine, info controllers.InfoController, d time.Duration) {

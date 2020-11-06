@@ -10,6 +10,7 @@ import (
 	"github.com/trustwallet/watchmarket/redis"
 	"github.com/trustwallet/watchmarket/services/assets"
 	"github.com/trustwallet/watchmarket/services/controllers"
+	alertscontroller "github.com/trustwallet/watchmarket/services/controllers/alerts"
 	"go.elastic.co/apm/module/apmgin"
 	"path/filepath"
 )
@@ -40,6 +41,7 @@ func InitAPI(
 	rates controllers.RatesController,
 	charts controllers.ChartsController,
 	info controllers.InfoController,
+	ac alertscontroller.Controller,
 	configuration config.Configuration,
 ) {
 	api.SetupBasicAPI(engine)
@@ -48,6 +50,7 @@ func InitAPI(
 	api.SetupInfoAPI(engine, info, configuration.RestAPI.Info.CacheControl)
 	api.SetupRatesAPI(engine, rates)
 	api.SetupSwaggerAPI(engine)
+	api.SetupAlertsAPI(engine, ac)
 }
 
 func InitAssets(assetsHost string) assets.Client {

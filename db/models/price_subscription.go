@@ -1,8 +1,8 @@
 package models
 
 type PriceSubscription struct {
-	UserID   string
+	UserID   string `gorm:"primaryKey; index:,"`
 	Price    float64
 	IsHigher bool
-	AssetID  string
+	AssetID  string `gorm:"primaryKey; index:,"`
 }
