@@ -95,9 +95,8 @@ func (i *Instance) GetTickers(coin uint, tokenId string, ctx context.Context) ([
 }
 
 func (i *Instance) GetTickersByAssetIDs(assetIDs []string, ctx context.Context) ([]models.Ticker, error) {
-	g := apmgorm.WithContext(ctx, i.Gorm)
 	var ticker []models.Ticker
-	if err := g.Where("ID in (?)", assetIDs).
+	if err := i.Gorm.Where("ID in (?)", assetIDs).
 		Find(&ticker).Error; err != nil {
 		return nil, err
 	}

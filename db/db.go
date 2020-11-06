@@ -19,5 +19,7 @@ type (
 
 		GetSubscribedAssets(ctx context.Context) ([]string, error)
 		GetSubscribedUsers(assetID string, price float64, higher bool, ctx context.Context) ([]string, error)
+		AddPriceSubscription(sub models.PriceSubscription, ctx context.Context) error
+		AddPriceSubscriptions(subs []models.PriceSubscription, ctx context.Context) error
 	}
 )
