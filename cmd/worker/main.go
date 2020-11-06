@@ -6,6 +6,7 @@ import (
 	"github.com/trustwallet/watchmarket/config"
 	"github.com/trustwallet/watchmarket/db/postgres"
 	"github.com/trustwallet/watchmarket/internal"
+	"github.com/trustwallet/watchmarket/services/alerts"
 	"github.com/trustwallet/watchmarket/services/markets"
 	"github.com/trustwallet/watchmarket/services/worker"
 	"os"
@@ -22,6 +23,7 @@ var (
 	w             worker.Worker
 	configuration config.Configuration
 	c             *cron.Cron
+	a             *alerts.Worker
 )
 
 func init() {
@@ -45,18 +47,19 @@ func init() {
 
 	w = worker.Init(m.RatesAPIs, m.TickersAPIs, database, nil, configuration)
 	c = cron.New(cron.WithChain(cron.Recover(cron.DefaultLogger)))
+	a = alerts.Init(database, configuration)
 
 	go postgres.FatalWorker(time.Second*10, *database)
 }
 
 func main() {
-	w.AddOperation(c, configuration.Worker.Rates, w.FetchAndSaveRates)
-	w.AddOperation(c, configuration.Worker.Tickers, w.FetchAndSaveTickers)
+	//w.AddOperation(c, configuration.Worker.Rates, w.FetchAndSaveRates)
+	//w.AddOperation(c, configuration.Worker.Tickers, w.FetchAndSaveTickers)
+	w.AddOperation(c, configuration.Worker.Tickers, a.Run)
 
 	go c.Start()
-	go w.FetchAndSaveRates()
-	go w.FetchAndSaveTickers()
-
+	//go w.FetchAndSaveRates()
+	go a.Run()
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

@@ -15,6 +15,7 @@ type (
 		GetTickers(coin uint, tokenId string, ctx context.Context) ([]models.Ticker, error)
 		GetAllTickers(ctx context.Context) ([]models.Ticker, error)
 		GetTickersByQueries(tickerQueries []models.TickerQuery, ctx context.Context) ([]models.Ticker, error)
+		GetTickersByAssetIDs(assetIDs []string, ctx context.Context) ([]models.Ticker, error)
 
 		GetSubscribedAssets(ctx context.Context) ([]string, error)
 		GetSubscribedUsers(assetID string, price float64, higher bool, ctx context.Context) ([]string, error)
