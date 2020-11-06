@@ -53,4 +53,15 @@ type (
 	DetailsRequest struct {
 		CoinQuery, Token, Currency string
 	}
+
+	SubscriptionsRequest struct {
+		Subscriptions []Subscription `json:"subscriptions"`
+	}
+
+	Subscription struct {
+		AssetID string  `json:"asset_id"`
+		Price   float64 `json:"price"`
+		Higher  bool    `json:"higher"`
+		UserID  string  `json:"user_id"`
+	}
 )

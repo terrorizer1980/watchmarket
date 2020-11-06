@@ -36,7 +36,7 @@ var (
 	rates          controllers.RatesController
 	charts         controllers.ChartsController
 	info           controllers.InfoController
-	ac             alertscontroller.Controller
+	ac             controllers.AlertsController
 	w              worker.Worker
 	c              *cron.Cron
 	memoryCache    cache.Provider

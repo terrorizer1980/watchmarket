@@ -2,13 +2,13 @@ package endpoint
 
 import (
 	"github.com/gin-gonic/gin"
-	alertscontroller "github.com/trustwallet/watchmarket/services/controllers/alerts"
+	"github.com/trustwallet/watchmarket/services/controllers"
 	"net/http"
 )
 
-func SubscribeHandler(controller alertscontroller.Controller) func(c *gin.Context) {
+func SubscribeHandler(controller controllers.AlertsController) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var sr alertscontroller.SubscriptionsRequest
+		var sr controllers.SubscriptionsRequest
 		err := c.BindJSON(&sr)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, nil)

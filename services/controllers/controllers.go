@@ -22,4 +22,8 @@ type (
 	InfoController interface {
 		HandleInfoRequest(dr DetailsRequest, ctx context.Context) (watchmarket.CoinDetails, error)
 	}
+
+	AlertsController interface {
+		HandleSubscriptionsRequest(sr SubscriptionsRequest, ctx context.Context) error
+	}
 )

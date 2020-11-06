@@ -5,6 +5,7 @@ import (
 	"github.com/trustwallet/watchmarket/config"
 	"github.com/trustwallet/watchmarket/db"
 	"github.com/trustwallet/watchmarket/db/models"
+	"github.com/trustwallet/watchmarket/services/controllers"
 )
 
 type Controller struct {
@@ -22,7 +23,7 @@ func NewController(
 	}
 }
 
-func (c Controller) HandleSubscriptionsRequest(sr SubscriptionsRequest, ctx context.Context) error {
+func (c Controller) HandleSubscriptionsRequest(sr controllers.SubscriptionsRequest, ctx context.Context) error {
 	subs := toSubscriptionsModel(sr.Subscriptions)
 	err := c.database.AddPriceSubscriptions(subs, ctx)
 	if err != nil {
@@ -31,7 +32,7 @@ func (c Controller) HandleSubscriptionsRequest(sr SubscriptionsRequest, ctx cont
 	return nil
 }
 
-func toSubscriptionsModel(subs []Subscription) []models.PriceSubscription {
+func toSubscriptionsModel(subs []controllers.Subscription) []models.PriceSubscription {
 	result := make([]models.PriceSubscription, 0, len(subs))
 	for _, s := range subs {
 		result = append(result, models.PriceSubscription{
