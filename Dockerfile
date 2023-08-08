@@ -11,7 +11,7 @@ RUN go mod download
 COPY . .
 RUN go build -o bin/watchmarket ./cmd/$SERVICE
 
-FROM alpine:latest
+FROM alpine:3.18.3
 COPY --from=builder /build/bin /app/bin/$SERVICE
 COPY --from=builder /build/config.yml /config/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
