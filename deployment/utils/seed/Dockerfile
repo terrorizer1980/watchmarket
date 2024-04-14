@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.16.9
 RUN apk --update add postgresql-client && rm -rf /var/cache/apk/*
 
 ENV STORAGE_POSTGRES_URI=
